@@ -13,11 +13,11 @@ module OmniContacts
         super app, client_id, client_secret, options
         @auth_host = "login.live.com"
         @authorize_path = "/oauth20_authorize.srf"
-        @scope = options[:permissions] || "wl.signin, wl.basic, wl.birthday , wl.emails ,wl.contacts_birthday , wl.contacts_photos"
+        @scope = options[:permissions] || "wl.signin, wl.basic, wl.birthday , wl.emails ,wl.contacts_birthday , wl.contacts_photos, wl.contacts_emails"
         @auth_token_path = "/oauth20_token.srf"
         @contacts_host = "apis.live.net"
         @contacts_path = "/v5.0/me/contacts"
-        @self_path = "/v5.0/me"
+        @self_path = "/v5.0/me" 
       end
 
       def fetch_contacts_using_access_token access_token, access_token_secret
@@ -41,8 +41,8 @@ module OmniContacts
           # creating nil fields to keep the fields consistent across other networks
           contact = {:id => nil, :first_name => nil, :last_name => nil, :name => nil, :email => nil, :gender => nil, :birthday => nil, :profile_picture=> nil, :relation => nil, :email_hashes => []}
           contact[:id] = entry['user_id'] ? entry['user_id'] : entry['id']
-          if valid_email? entry["name"]
-            contact[:email] = entry["name"]
+          if valid_email? entry["emails"]["preferred"]
+            contact[:email] = entry["emails"]["preferred"]
             contact[:first_name], contact[:last_name], contact[:name] = email_to_name(contact[:email])
           else
             contact[:first_name] = normalize_name(entry['first_name'])
